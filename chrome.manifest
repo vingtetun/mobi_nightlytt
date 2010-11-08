@@ -1,0 +1,6 @@
+content      nightly                                                  chrome/content/
+skin         nightly          classic/1.0                             chrome/skin/
+
+locale       nightly          en-US                                   chrome/locale/en-US/
+
+overlay chrome://browser/content/browser.xul  chrome://nightly/content/fennecOverlay.xul
