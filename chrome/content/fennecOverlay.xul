@@ -57,6 +57,9 @@
       <notificationbox id="nightly-messages" flex="1">
         <richlistbox id="nightly-list" flex="1" onselect="this.ensureSelectedElementIsVisible()">
           <label id="nightly-list-header" class="panel-header" value="&nightlyHeader.label;"/> 
+          <settings id="nightly-options" label="&nightly.options.title;">
+            <setting pref="extensions.quit-fennec.prompt" type="bool" title="&nightly.quit.title;"/>
+          </settings>
           <settings id="nightly-information" label="&nightly.information.title;">
             <setting id="build-copy" title="&nightly.id.copy.buildid.title;" type="control">
               <button label="&nightly.copy.button.label;" oncommand="nightly.copyTemplate('buildid');"/>

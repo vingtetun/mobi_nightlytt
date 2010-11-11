@@ -2,3 +2,8 @@
   list-style-image: url("chrome://nightly/content/brand/icon.png");
 }
 
+box[type="documenttab"]:only-child > stack > hbox > .documenttab-close,
+documenttab:only-child > stack > hbox > .documenttab-close {
+  display: -moz-initial !important;
+}
+

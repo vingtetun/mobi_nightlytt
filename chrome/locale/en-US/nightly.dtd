@@ -1,5 +1,8 @@
 <!ENTITY nightlyHeader.label                  "Nightly Tester Tools">
 
+<!ENTITY nightly.options.title                "Options">
+<!ENTITY nightly.quit.title                   "Confirm to Quit Fennec?">
+
 <!ENTITY nightly.information.title            "Get Information">
 <!ENTITY nightly.id.copy.buildid.title        "Build Id">
 <!ENTITY nightly.id.copy.extensions.title     "List of Extensions">

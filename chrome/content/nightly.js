@@ -18,6 +18,7 @@
  *     Heather Arthur <fayearthur@gmail.com>
  *     Mark Finkle <mark.finkle@gmail.com>
  *     Dave Townsend <dtownsend@mozilla.com>
+ *     Matt Brubeck <mbrubeck@mozilla.com>
  *
  * Portions created by the Initial Developer are Copyright (C) 2007
  * the Initial Developer. All Rights Reserved.
@@ -37,6 +38,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+
 var nightly = {
 
 variables: {
@@ -303,8 +305,26 @@ updateRestart: function updateRestart() {
     let message = strings.getString("notificationRestart.normal");
     msg.appendNotification(message, value, "", msg.PRIORITY_WARNING_LOW, buttons);
   }
+},
+
+closeTabOrQuit: function() {
+  let closeTab = Browser.closeTab;
+
+  Browser.closeTab = function() {
+    if (this._tabs.length == 1) {
+      if (Services.prefs.getBoolPref("extensions.quit-fennec.prompt")) {
+        if (!Services.prompt.confirm(window, "Quit Fennec", "Are you sure you want to quit?"))
+          return;
+      }
+      if (Browser.closing())
+        window.close();
+    } else {
+      closeTab.apply(Browser, arguments);
+    }
+  }
 }
 }
 
+window.addEventListener("UIReady", nightly.closeTabOrQuit, false);
 window.addEventListener("load", nightly.init, false);
 window.addEventListener("unload", nightly.unload, false);
