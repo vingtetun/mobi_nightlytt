@@ -3,4 +3,6 @@ skin         nightly          classic/1.0                             chrome/ski
 
 locale       nightly          en-US                                   chrome/locale/en-US/
 
+resource     crashme                                                  modules/
+
 overlay chrome://browser/content/browser.xul  chrome://nightly/content/fennecOverlay.xul
