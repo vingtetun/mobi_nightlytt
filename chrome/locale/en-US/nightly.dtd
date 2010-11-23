@@ -11,6 +11,4 @@
 <!ENTITY nightly.tools.title                  "Tools">
 <!ENTITY nightly.forceCompat.title            "Force Add-ons Compatibility">
 <!ENTITY nightly.errorConsole.title           "Enable the Error Console">
-<!ENTITY nightly.crashme.title                "Test Crash Reporter">
-<!ENTITY nightly.crashme.button.label         "Crash Me">
 

@@ -47,7 +47,6 @@
 
 <overlay id="nightly-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://nightly/content/nightly.js"/>
-  <script type="application/javascript" src="chrome://nightly/content/crashme.js"/>
 
   <box id="panel-controls">
     <toolbarbutton id="tool-nightly" class="panel-row-button" autocheck="true" type="radio" group="1" linkedpanel="nightly-container" insertafter="tool-addons"/>
@@ -65,16 +64,13 @@
             <setting id="build-copy" title="&nightly.id.copy.buildid.title;" type="control">
               <button label="&nightly.copy.button.label;" oncommand="nightly.copyTemplate('buildid');"/>
             </setting>
-            <setting id="nightly-extensions-copy" title="&nightly.id.copy.extensions.title;" type="control">
+            <setting id="extensions-copy" title="&nightly.id.copy.extensions.title;" type="control">
               <button label="&nightly.copy.button.label;" oncommand="nightly.copyExtensions();"/>
             </setting>
           </settings> 
           <settings id="nightly-tools" label="&nightly.tools.title;">
             <setting pref="extensions.checkCompatibility.4.0b" title="&nightly.forceCompat.title;" type="bool" inverted="true" oninputchanged="nightly.updateRestart();"/>
             <setting pref="browser.console.showInPanel" title="&nightly.errorConsole.title;" type="bool" oninputchanged="nightly.updateRestart();"/>
-            <setting id="nightly-crashme" title="&nightly.crashme.title;" type="control">
-              <button label="&nightly.crashme.button.label;" oncommand="crashme.onMenuItemCommand();"/>
-            </setting>
           </settings>
         </richlistbox>
       </notificationbox>
