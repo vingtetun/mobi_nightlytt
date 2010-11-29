@@ -262,7 +262,7 @@ postToPastebin: function (postContent) {
   var request = new XMLHttpRequest();
     if (request.ovverideMimeType)
       request.overrideMimeType('text/xml');
-    request.open("POST", nightly.getURLHead()+"/api_public.php", true);
+    request.open("POST", nightly.preferences.getCharPref("pastebin-url")+"/api_public.php", true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.setRequestHeader("Content-length", postdata.length);
 
@@ -276,17 +276,6 @@ postToPastebin: function (postContent) {
     };
 
     request.send(postdata);
-},
-
-// Gets pastebin domain 
-getURLHead: function() {
-  try {
-      var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                        .getService(Components.interfaces.nsIPrefService)
-                        .getBranch("");
-  } catch (err) {}
-
-  return prefs.getCharPref("nightly.pastebin-url");
 },
 
 postExtensions: function() {
