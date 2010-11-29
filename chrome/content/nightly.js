@@ -181,6 +181,7 @@ getTemplate: function(name) {
   return nightly.getStoredItem("templates",name);
 },
 
+// Generates the contents of a specified template
 generateText: function(template) {
   var start = 0;
   var pos = template.indexOf("${",start);
@@ -211,14 +212,9 @@ generateText: function(template) {
   return template;
 },
 
-copyText: function(text) {
-  var clipboard = Components.classes["@mozilla.org/widget/clipboardhelper;1"].
-                                         getService(Components.interfaces.nsIClipboardHelper);
-  clipboard.copyString(text);
-},
-
-copyTemplate: function(template) {
-  nightly.copyText(nightly.generateText(nightly.getTemplate(template)));
+// Posts the returned value of a specified template to Pastebin
+postTemplate: function(template) {
+  nightly.postToPastebin(nightly.generateText(nightly.getTemplate(template)));
 },
 
 insensitiveSort: function(a, b) {
@@ -232,6 +228,7 @@ insensitiveSort: function(a, b) {
   return 0
 },
 
+// Grabs the list of extensions on the profile from the AddonsManager jsm module
 getExtensionList: function(callback) {
   Components.utils.import("resource://gre/modules/AddonManager.jsm");
 
@@ -244,29 +241,12 @@ getExtensionList: function(callback) {
         + (addon.userDisabled || addon.appDisabled ? " [DISABLED]" : "");
     });
     strings.sort(nightly.insensitiveSort);
+    
     callback(strings.join("\n"));
-  });
+  });  
 },
 
-insertExtensions: function() {
-  var element = document.commandDispatcher.focusedElement;
-  if (element) {
-    var type = element.localName.toLowerCase();
-    if ((type == "input") || (type == "textarea")) {
-      nightly.getExtensionList(function(text) {
-        var newpos = element.selectionStart + text.length;
-        var value = element.value;
-        element.value = value.substring(0, element.selectionStart) + text +
-                        value.substring(element.selectionEnd);
-        element.selectionStart = newpos;
-        element.selectionEnd = newpos;
-      });
-      return;
-    }
-  }
-  nightly.showAlert("nightly.notextbox.message",[]);
-},
-
+// Copies a list of extensions on the profile to the clipboard
 copyExtensions: function() {
   nightly.getExtensionList(function(text) {
     if (text)
@@ -274,6 +254,49 @@ copyExtensions: function() {
   });
 },
 
+postToPastebin: function (postContent) {
+  var encodedContent = encodeURIComponent(postContent);
+  var postdata =  "parent_pid=";
+    postdata += "&paste_code="+encodedContent;
+
+  var request = new XMLHttpRequest();
+    if (request.ovverideMimeType)
+      request.overrideMimeType('text/xml');
+    request.open("POST", nightly.getURLHead()+"/api_public.php", true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.setRequestHeader("Content-length", postdata.length);
+
+    request.onreadystatechange = function() {
+      if (request.readyState == 4 ) {
+        if (request.status==200) {
+          var url = request.responseText;
+          BrowserUI.newTab(url);
+        }
+      }
+    };
+
+    request.send(postdata);
+},
+
+// Gets pastebin domain 
+getURLHead: function() {
+  try {
+      var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+                        .getService(Components.interfaces.nsIPrefService)
+                        .getBranch("");
+  } catch (err) {}
+
+  return prefs.getCharPref("nightly.pastebin-url");
+},
+
+postExtensions: function() {
+
+  nightly.getExtensionList(function(text) {
+    nightly.postToPastebin(text);
+  });
+},
+
+// Pops up the restart notification within the Preferences pane
 updateRestart: function updateRestart() {
   let msg = document.getElementById("nightly-messages");
   if (msg) {
@@ -307,6 +330,7 @@ updateRestart: function updateRestart() {
   }
 },
 
+// Closes Fennec when the 'x' button on the only open tab is pressed
 closeTabOrQuit: function() {
   let closeTab = Browser.closeTab;
 

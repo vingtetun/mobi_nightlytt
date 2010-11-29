@@ -37,4 +37,6 @@
 #
 pref("nightly.templates.buildid", "${UserAgent} ID:${AppBuildID}${Flags}");
 pref("nightly.templates.title", "${DefaultTitle} (Build ${AppBuildID})");
-pref("extensions.quit-fennec.prompt", false);
+pref("nightly.quit.prompt", false);
+pref("nightly.pastebin-url", "http://pastebin.com");
+
