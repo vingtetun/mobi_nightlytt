@@ -214,9 +214,14 @@ generateText: function(template) {
 
 // Posts the returned value of a specified template to Pastebin
 postTemplate: function(template) {
+  let button = document.getElementById("build-post");
+  button.setAttribute("disabled", "true");
   nightly.postToPastebin(nightly.generateText(nightly.getTemplate(template)));
+  
+  button.setAttribute("disabled", "false");
 },
 
+// Sort list of extensions in alphabetical order
 insensitiveSort: function(a, b) {
   a = a.toLowerCase();
   b = b.toLowerCase();
@@ -254,7 +259,8 @@ copyExtensions: function() {
   });
 },
 
-postToPastebin: function (postContent) {
+postToPastebin: function (postContent, type) {
+  
   var encodedContent = encodeURIComponent(postContent);
   var postdata =  "parent_pid=";
     postdata += "&paste_code="+encodedContent;
@@ -266,12 +272,12 @@ postToPastebin: function (postContent) {
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.setRequestHeader("Content-length", postdata.length);
 
+
+    let timer  = new Util.Timeout();
     request.onreadystatechange = function() {
-      if (request.readyState == 4 ) {
-        if (request.status==200) {
-          var url = request.responseText;
-          BrowserUI.newTab(url);
-        }
+      if (request.readyState == 4 && request.status==200) {
+        var url = request.responseText;
+        BrowserUI.newTab(url);
       }
     };
 
@@ -279,10 +285,14 @@ postToPastebin: function (postContent) {
 },
 
 postExtensions: function() {
-
+  let button = document.getElementById("extensions-post");
+  button.setAttribute("disabled", "true");
+  
   nightly.getExtensionList(function(text) {
     nightly.postToPastebin(text);
   });
+
+  button.setAttribute("disabled", "false");
 },
 
 // Pops up the restart notification within the Preferences pane
