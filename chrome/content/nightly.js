@@ -212,15 +212,6 @@ generateText: function(template) {
   return template;
 },
 
-// Posts the returned value of a specified template to Pastebin
-postTemplate: function(template) {
-  let button = document.getElementById("build-post");
-  button.setAttribute("disabled", "true");
-  nightly.postToPastebin(nightly.generateText(nightly.getTemplate(template)));
-  
-  button.setAttribute("disabled", "false");
-},
-
 // Sort list of extensions in alphabetical order
 insensitiveSort: function(a, b) {
   a = a.toLowerCase();
@@ -251,48 +242,71 @@ getExtensionList: function(callback) {
   });  
 },
 
-// Copies a list of extensions on the profile to the clipboard
-copyExtensions: function() {
-  nightly.getExtensionList(function(text) {
-    if (text)
-      nightly.copyText(text);
-  });
-},
-
-postToPastebin: function (postContent, type) {
-  
-  var encodedContent = encodeURIComponent(postContent);
-  var postdata =  "parent_pid=";
-    postdata += "&paste_code="+encodedContent;
-
+// Sends the string within the content var within a POST to pastebin.com.
+// The browser controls row entry is updated with the status of the request
+pastebin: function (content, element) {
+  var postdata = "paste_code="+encodeURIComponent(content);
   var request = new XMLHttpRequest();
-    if (request.ovverideMimeType)
-      request.overrideMimeType('text/xml');
-    request.open("POST", nightly.preferences.getCharPref("pastebin-url")+"/api_public.php", true);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.setRequestHeader("Content-length", postdata.length);
+  request.open("POST", "http://pastebin.com/api_public.php", true);
+  request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  request.setRequestHeader("Content-length", postdata.length);
 
-
-    let timer  = new Util.Timeout();
-    request.onreadystatechange = function() {
-      if (request.readyState == 4 && request.status==200) {
-        var url = request.responseText;
-        BrowserUI.newTab(url);
-      }
-    };
-
-    request.send(postdata);
+  request.onreadystatechange = function() {
+    if (request.readyState == 4 && request.status==200) {
+      BrowserUI.newTab(request.responseText);
+      document.getElementById(element).setAttribute("desc", request.responseText);
+    } else {
+      document.getElementById(element).setAttribute("desc", "Error:" + request.status + "occurred");
+    }
+  };
+  
+  request.send(postdata);
 },
 
-postExtensions: function() {
-  let button = document.getElementById("extensions-post");
-  button.setAttribute("disabled", "true");
+pastebinTemplate: function(template, setting) {
+  document.getElementById(setting).setAttribute("desc", "sending...");
+  
+  nightly.pastebin(nightly.generateText(nightly.getTemplate(template)), setting);
+},
+
+pastebinExtensions: function() {
+  document.getElementById("extensions-post").setAttribute("desc", "sending...");
   
   nightly.getExtensionList(function(text) {
-    nightly.postToPastebin(text);
+    nightly.pastebin(text, "extensions-post");
   });
+},
 
-  button.setAttribute("disabled", "false");
+pastebinAboutSupport: function() {
+  document.getElementById("aboutSupport-post").setAttribute("desc", "sending...");
+  nightly.parseHTML("about:support", function(doc) {
+    var contents = doc.getElementById("contents");
+    var text = nightlyPPrint.createTextForElement(contents);
+    nightly.pastebin(text, "aboutSupport-post");
+  });
+},
+
+parseHTML: function(url, callback) {
+  var frame = document.getElementById("sample-frame");
+  if (!frame)
+    frame = document.createElement("iframe");
+ 
+  frame.setAttribute("id", "sample-frame");
+  frame.setAttribute("name", "sample-frame");
+  frame.setAttribute("type", "content");
+  frame.setAttribute("collapsed", "true");
+  document.getElementById("main-window").appendChild(frame);
+
+  frame.addEventListener("load", function (event) {
+    var doc = event.originalTarget;
+    if (doc.location.href == "about:blank" || doc.defaultView.frameElement)
+      return;
+
+    setTimeout(function () {  // give enough time for js to populate page
+      callback(doc);
+    }, 800);
+  }, true);
+  frame.contentDocument.location.href = url;
 },
 
 // Pops up the restart notification within the Preferences pane

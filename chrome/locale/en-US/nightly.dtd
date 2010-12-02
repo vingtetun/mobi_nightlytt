@@ -5,7 +5,8 @@
 
 <!ENTITY nightly.information.title            "Get Information">
 <!ENTITY nightly.id.post.buildid.title        "Build Id">
-<!ENTITY nightly.id.post.extensions.title     "List of Extensions">
+<!ENTITY nightly.id.post.extensions.title     "Extensions List">
+<!ENTITY nightly.id.post.aboutSupport.title   "About:Support">
 <!ENTITY nightly.copy.button.label            "Copy">
 <!ENTITY nightly.post.button.label            "Send to Pastebin">
 

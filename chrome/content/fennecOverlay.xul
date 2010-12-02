@@ -47,6 +47,7 @@
 
 <overlay id="nightly-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/javascript" src="chrome://nightly/content/nightly.js"/>
+  <script type="application/javascript" src="chrome://nightly/content/pprint.js"/>
 
   <box id="panel-controls">
     <toolbarbutton id="tool-nightly" class="panel-row-button" autocheck="true" type="radio" group="1" linkedpanel="nightly-container" insertafter="tool-addons"/>
@@ -62,10 +63,13 @@
           </settings>
           <settings id="nightly-information" label="&nightly.information.title;">
             <setting id="build-post" title="&nightly.id.post.buildid.title;" type="control">
-              <button label="&nightly.post.button.label;" oncommand="nightly.postTemplate('buildid');"/>
+              <button label="&nightly.post.button.label;" oncommand="nightly.pastebinTemplate('buildid', 'build-post');"/>
             </setting>
             <setting id="extensions-post" title="&nightly.id.post.extensions.title;" type="control">
-              <button label="&nightly.post.button.label;" oncommand="nightly.postExtensions();"/>
+              <button label="&nightly.post.button.label;" oncommand="nightly.pastebinExtensions();"/>
+            </setting>
+            <setting id="aboutSupport-post" title="&nightly.id.post.aboutSupport.title;" type="control">
+              <button label="&nightly.post.button.label;" oncommand="nightly.pastebinAboutSupport();"/>
             </setting>
           </settings> 
           <settings id="nightly-tools" label="&nightly.tools.title;">
