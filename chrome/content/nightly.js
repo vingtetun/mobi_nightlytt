@@ -269,20 +269,20 @@ pastebinTemplate: function(template, setting) {
   nightly.pastebin(nightly.generateText(nightly.getTemplate(template)), setting);
 },
 
-pastebinExtensions: function() {
-  document.getElementById("extensions-post").setAttribute("desc", "sending...");
+pastebinExtensions: function(setting) {
+  document.getElementById(setting).setAttribute("desc", "sending...");
   
   nightly.getExtensionList(function(text) {
-    nightly.pastebin(text, "extensions-post");
+    nightly.pastebin(text, setting);
   });
 },
 
-pastebinAboutSupport: function() {
-  document.getElementById("aboutSupport-post").setAttribute("desc", "sending...");
+pastebinAboutSupport: function(setting) {
+  document.getElementById(setting).setAttribute("desc", "sending...");
   nightly.parseHTML("about:support", function(doc) {
     var contents = doc.getElementById("contents");
     var text = nightlyPPrint.createTextForElement(contents);
-    nightly.pastebin(text, "aboutSupport-post");
+    nightly.pastebin(text, setting);
   });
 },
 
@@ -349,7 +349,7 @@ closeTabOrQuit: function() {
 
   Browser.closeTab = function() {
     if (this._tabs.length == 1) {
-      if (Services.prefs.getBoolPref("extensions.quit-fennec.prompt")) {
+      if (Services.prefs.getBoolPref("nightly.quit.prompt")) {
         if (!Services.prompt.confirm(window, "Quit Fennec", "Are you sure you want to quit?"))
           return;
       }

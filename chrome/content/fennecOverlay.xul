@@ -66,10 +66,10 @@
               <button label="&nightly.post.button.label;" oncommand="nightly.pastebinTemplate('buildid', 'build-post');"/>
             </setting>
             <setting id="extensions-post" title="&nightly.id.post.extensions.title;" type="control">
-              <button label="&nightly.post.button.label;" oncommand="nightly.pastebinExtensions();"/>
+              <button label="&nightly.post.button.label;" oncommand="nightly.pastebinExtensions('extensions-post');"/>
             </setting>
             <setting id="aboutSupport-post" title="&nightly.id.post.aboutSupport.title;" type="control">
-              <button label="&nightly.post.button.label;" oncommand="nightly.pastebinAboutSupport();"/>
+              <button label="&nightly.post.button.label;" oncommand="nightly.pastebinAboutSupport('aboutSupport-post');"/>
             </setting>
           </settings> 
           <settings id="nightly-tools" label="&nightly.tools.title;">
