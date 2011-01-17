@@ -313,33 +313,43 @@ parseHTML: function(url, callback) {
 updateRestart: function updateRestart() {
   let msg = document.getElementById("nightly-messages");
   if (msg) {
-    let strings = Elements.browserBundle;
-
     let value = "restart-app";
     let notification = msg.getNotificationWithValue(value);
-    if (notification)
-      return;
-
-    let restartCallback = function(aNotification, aDescription) {
-      // Notify all windows that an application quit has been requested
-      var cancelQuit = Cc["@mozilla.org/supports-PRBool;1"].createInstance(Ci.nsISupportsPRBool);
-      Services.obs.notifyObservers(cancelQuit, "quit-application-requested", "restart");
-
-      // If nothing aborted, quit the app
-      if (cancelQuit.data == false) {
-        let appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].getService(Ci.nsIAppStartup);
-        appStartup.quit(Ci.nsIAppStartup.eRestart | Ci.nsIAppStartup.eAttemptQuit);
+   if (notification) {
+      // Check if the pref back to the initial state dismiss the restart
+      // notification because it does not make sense anymore
+      for each (let pref in this._prefs) {
+        let value = Services.prefs.getPrefType(pref.name) == Ci.nsIPrefBranch.PREF_INVALID ? false : Services.prefs.getBoolPref(pref.name);
+        if (value == pref.value)
+          return;
       }
-    };
 
-    let buttons = [ {
-      label: strings.getString("notificationRestart.button"),
-      accessKey: "",
-      callback: restartCallback
-    } ];
+      notification.close();
+      return;
+   }
 
-    let message = strings.getString("notificationRestart.normal");
-    msg.appendNotification(message, value, "", msg.PRIORITY_WARNING_LOW, buttons);
+   let restartCallback = function(aNotification, aDescription) {
+     // Notify all windows that an application quit has been requested
+     let cancelQuit = Cc["@mozilla.org/supports-PRBool;1"].createInstance(Ci.nsISupportsPRBool);
+     Services.obs.notifyObservers(cancelQuit, "quit-application-requested", "restart");
+
+     // If nothing aborted, quit the app
+     if (cancelQuit.data == false) {
+       let appStartup = Cc["@mozilla.org/toolkit/app-startup;1"].getService(Ci.nsIAppStartup);
+       appStartup.quit(Ci.nsIAppStartup.eRestart | Ci.nsIAppStartup.eAttemptQuit);
+     }
+   };
+
+   let strings = Strings.browser;
+
+   let buttons = [ {
+     label: strings.GetStringFromName("notificationRestart.button"),
+     accessKey: "",
+     callback: restartCallback
+   } ];
+  
+   let message = strings.GetStringFromName("notificationRestart.normal");
+   msg.appendNotification(message, value, "", msg.PRIORITY_WARNING_LOW, buttons);
   }
 },
 
