@@ -41,6 +41,8 @@
 
 var nightly = {
 
+_prefs: [],
+
 variables: {
   _appInfo: null,
   get appInfo() {
@@ -96,6 +98,16 @@ init: function() {
   var profservice = Components.classes["@mozilla.org/toolkit/profile-service;1"]
                               .getService(Components.interfaces.nsIToolkitProfileService);
   var profiles = profservice.profiles;
+  
+  let nightlyPrefs = document.getElementById("nightly-tools").childNodes;
+      for (let i = 0; i < nightlyPrefs.length; i++) {
+        let pref = nightlyPrefs[i].getAttribute("pref");
+        if (!pref)
+          continue;
+  
+        let value = Services.prefs.getPrefType(pref) == Ci.nsIPrefBranch.PREF_INVALID ? false : Services.prefs.getBoolPref(pref);
+        nightly._prefs.push({ "name": pref, "value": value });
+      }
   while (profiles.hasMoreElements()) {
     var profile = profiles.getNext().QueryInterface(Components.interfaces.nsIToolkitProfile);
     if (profile.rootDir.path == profd.path) {
