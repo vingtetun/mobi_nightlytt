@@ -58,8 +58,11 @@
       <notificationbox id="nightly-messages" flex="1">
         <richlistbox id="nightly-list" flex="1" onselect="this.ensureSelectedElementIsVisible()">
           <label id="nightly-list-header" class="panel-header" value="&nightlyHeader.label;"/> 
-          <settings id="nightly-options" label="&nightly.options.title;">
-            <setting pref="nightly.quit.prompt" type="bool" title="&nightly.quit.title;"/>
+          <settings id="nightly-feedback" label="&nightly.communicate.title;">
+            <setting title="&nightly.feedback.title;" type="control">
+              <button id="nightly-feedback-happy" oncommand="nightly.openFeedback('happy');"/>
+              <button id="nightly-feedback-sad" oncommand="nightly.openFeedback('sad');"/>
+            </setting>
           </settings>
           <settings id="nightly-information" label="&nightly.information.title;">
             <setting id="build-post" title="&nightly.id.post.buildid.title;" type="control">
@@ -74,7 +77,7 @@
           </settings> 
           <settings id="nightly-tools" label="&nightly.tools.title;">
             <setting pref="extensions.checkCompatibility" title="&nightly.forceCompat.title;" type="bool" inverted="true" oninputchanged="nightly.updateRestart();"/>
-            <setting pref="devtools.errorconsole.enabled" title="&nightly.errorConsole.title;" type="bool" oninputchanged="nightly.updateRestart();"/>
+            <setting pref="devtools.errorconsole.enabled" title="&nightly.errorConsole.title;" type="bool"/>
             <setting pref="layers.acceleration.disabled" title="&nightly.hwaccel.title;" type="bool" oninputchanged="nightly.updateRestart();"/>
           </settings>
         </richlistbox>

@@ -15,3 +15,5 @@
 <!ENTITY nightly.errorConsole.title           "Enable the Error Console">
 <!ENTITY nightly.hwaccel.title                "Enable Graphics Acceleration">
 
+<!ENTITY nightly.communicate.title            "Inform the Developers">
+<!ENTITY nightly.feedback.title               "Send Feedback">

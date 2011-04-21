@@ -37,6 +37,7 @@
 #
 pref("nightly.templates.buildid", "${UserAgent} ID:${AppBuildID}${Flags}");
 pref("nightly.templates.title", "${DefaultTitle} (Build ${AppBuildID})");
-pref("nightly.quit.prompt", false);
 pref("nightly.pastebin-url", "http://pastebin.com");
+pref("nightly.feedback.url.happy", "http://input.mozilla.com/happy");
+pref("nightly.feedback.url.sad", "http://input.mozilla.com/sad");
 

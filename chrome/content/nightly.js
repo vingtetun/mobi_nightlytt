@@ -42,6 +42,8 @@
 var nightly = {
 
 _prefs: [],
+_device: "",
+_manufacturer: "",
 
 variables: {
   _appInfo: null,
@@ -85,6 +87,31 @@ templates: {
 preferences: null,
 
 init: function() {
+
+  // Delay the widget initialization during startup.
+  window.addEventListener("UIReadyDelayed", function(aEvent) {
+   
+    // A simple frame script to fill in the referrer page and device info
+    messageManager.loadFrameScript("chrome://nightly/content/content.js", true);
+    
+    window.removeEventListener(aEvent.type, arguments.callee, false);
+    document.getElementById("nightly-container").hidden = false;
+    
+    let feedbackPrefs = document.getElementById("nightly-tools").childNodes;
+    for (let i =0; i < nightlyPrefs.length; i++) {
+      let pref = nightlyPrefs[i].getAttribute("pref");
+      if (!pref)
+        continue;
+      
+      let value = Services.prefs.getPrefType(pref) == Ci.nsIPrefBranch.PREF_INVALID ? false : Services.prefs.getBoolPref(pref);
+      nightly._prefs.push({"name": pref, "value": value}); 
+    }
+    
+    let sysInfo = Cc["@mozilla.org/system-info;1"].getService(Ci.nsIPropertyBag2);
+    nightly._device = sysInfo.get("device");
+    nightly._manufacturer = sysInfo.get("manufacturer");
+  }, false);
+
   window.removeEventListener("load", nightly.init, false);
   var prefs = Components.classes["@mozilla.org/preferences-service;1"]
                         .getService(Components.interfaces.nsIPrefService);
@@ -365,25 +392,23 @@ updateRestart: function updateRestart() {
   }
 },
 
-// Closes Fennec when the 'x' button on the only open tab is pressed
-closeTabOrQuit: function() {
-  let closeTab = Browser.closeTab;
+openFeedback: function(aName) {
+  let pref = "nightly.feedback.url." + aName;
+  let url = Services.prefs.getPrefType(pref) == Ci.nsIPrefBranch.PREF_INVALID ? "" : Services.prefs.getCharPref(pref);
+  if (!url)
+    return;
 
-  Browser.closeTab = function() {
-    if (this._tabs.length == 1) {
-      if (Services.prefs.getBoolPref("nightly.quit.prompt")) {
-        if (!Services.prompt.confirm(window, "Quit Fennec", "Are you sure you want to quit?"))
-          return;
-      }
-      if (Browser.closing())
-        window.close();
-    } else {
-      closeTab.apply(Browser, arguments);
-    }
-  }
-}
+  let currentURL = Browser.selectedBrowser.currentURI.spec;
+  let newTab = BrowserUI.newTab(url, Browser.selectedTab);
+
+  // Tell the feedback page to fill in the referrer URL
+  newTab.browser.messageManager.addMessageListener("DOMContentLoaded", function() {
+    newTab.browser.messageManager.removeMessageListener("DOMContentLoaded", arguments.callee, true);
+    newTab.browser.messageManager.sendAsyncMessage("nightly:InitPage", { referrer: currentURL, device: nightly._device, manufacturer: nightly._manufacturer });
+  });
 }
 
-window.addEventListener("UIReady", nightly.closeTabOrQuit, false);
+}
+
 window.addEventListener("load", nightly.init, false);
 window.addEventListener("unload", nightly.unload, false);

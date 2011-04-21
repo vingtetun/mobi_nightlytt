@@ -2,6 +2,14 @@
   list-style-image: url("chrome://nightly/content/brand/icon.png");
 }
 
+#nightly-feedback-happy {
+  list-style-image: url("chrome://nightly/skin/happy-32.png");
+}
+
+#nightly-feedback-sad {
+  list-style-image: url("chrome://nightly/skin/sad-32.png");
+}
+
 box[type="documenttab"]:only-child > stack > hbox > .documenttab-close,
 documenttab:only-child > stack > hbox > .documenttab-close {
   display: -moz-initial !important;
