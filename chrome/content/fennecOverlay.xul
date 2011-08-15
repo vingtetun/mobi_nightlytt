@@ -76,6 +76,7 @@
             </setting>
           </settings> 
           <settings id="nightly-tools" label="&nightly.tools.title;">
+            <setting pref="toolkit.telemetry.enabled" title="&nightly.telemetry.title;" type="bool"/>
             <setting pref="extensions.checkCompatibility.nightly" title="&nightly.forceCompat.title;" type="bool" inverted="true" oninputchanged="nightly.updateRestart();"/>
             <setting pref="devtools.errorconsole.enabled" title="&nightly.errorConsole.title;" type="bool"/>
             <setting pref="layers.acceleration.disabled" title="&nightly.hwaccel.title;" type="bool" oninputchanged="nightly.updateRestart();"/>

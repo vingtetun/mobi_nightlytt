@@ -1,4 +1,4 @@
-<!ENTITY nightlyHeader.label                  "Nightly Tester Tools">
+<!ENTITY nightlyHeader.label                  "Tester Tools">
 
 <!ENTITY nightly.options.title                "Options">
 <!ENTITY nightly.quit.title                   "Confirm to Quit Fennec?">
@@ -11,6 +11,7 @@
 <!ENTITY nightly.post.button.label            "Send to Pastebin">
 
 <!ENTITY nightly.tools.title                  "Tools">
+<!ENTITY nightly.telemetry.title              "Send Performance Data">
 <!ENTITY nightly.forceCompat.title            "Force Add-ons Compatibility">
 <!ENTITY nightly.errorConsole.title           "Enable the Error Console">
 <!ENTITY nightly.hwaccel.title                "Enable Graphics Acceleration">
