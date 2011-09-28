@@ -87,6 +87,26 @@ templates: {
 preferences: null,
 
 init: function() {
+  // Activate I/O redirection on Android (bug 586010)
+  try {
+    Components.utils.import("resource://gre/modules/ctypes.jsm");
+    var libcutils = ctypes.open("libcutils.so");
+    var property_get = libcutils.declare("property_get", ctypes.default_abi,
+                                         ctypes.int, ctypes.char.ptr,
+                                         ctypes.char.ptr, ctypes.char.ptr);
+    var kMaxPropSize = 92;
+    var logstdio = ctypes.char.array(kMaxPropSize)();
+    var len = property_get("log.redirect-stdio", logstdio, "false");
+    if (len > 0 && logstdio.readString(len) == "false") {
+      var libdvm = ctypes.open("libdvm.so");
+      var dvmStdioConverterStartup = libdvm.declare("dvmStdioConverterStartup",
+                                                     ctypes.default_abi,
+                                                     ctypes.void_t);
+      dvmStdioConverterStartup();
+    }
+  } catch(e) {
+    Components.utils.reportError("ctypes exception: " + e);
+  }
 
   // Delay the widget initialization during startup.
   window.addEventListener("UIReadyDelayed", function(aEvent) {
